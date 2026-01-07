@@ -94,8 +94,12 @@ export default function BookingPage() {
             }
 
             setStep('confirmation');
-        } catch (err: any) {
-            setSubmitError(err.message);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setSubmitError(err.message);
+            } else {
+                setSubmitError('An unexpected error occurred.');
+            }
         } finally {
             setIsSubmitting(false);
         }

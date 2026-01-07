@@ -13,7 +13,17 @@ type Metrics = {
     newCustomers: number;
     returningCustomers: number;
     recentActivity: { date: string; new: number; returning: number }[];
-    recentBookings: any[];
+    recentBookings: BookingWithCustomer[];
+};
+
+type BookingWithCustomer = {
+    id: string;
+    start_time: string;
+    customers: {
+        email: string;
+        name: string;
+        created_at: string;
+    } | null; // Allow null if join fails or data missing
 };
 
 export default function AdminDashboard() {
@@ -71,6 +81,8 @@ export default function AdminDashboard() {
                     dayBookings.forEach(b => {
                         // Primitive logic: If customer created_at is on the same day as booking -> New
                         // Ideally we query: count previous bookings for this customer.
+                        if (!b.customers) return;
+                        
                         const customerCreated = new Date(b.customers.created_at);
                         const bookingTime = new Date(b.start_time);
                         if (isSameDay(customerCreated, bookingTime)) {
@@ -93,6 +105,7 @@ export default function AdminDashboard() {
 
                 // Simple logic for total split based on ALL bookings
                 bookings.forEach(b => {
+                    if (!b.customers) return;
                     const customerCreated = new Date(b.customers.created_at);
                     const bookingTime = new Date(b.start_time);
                     if (isSameDay(customerCreated, bookingTime)) newCustomersTotal++;
@@ -282,11 +295,11 @@ export default function AdminDashboard() {
                                             </p>
                                         </div>
                                         {/* Simple New vs Ret Logic for display: if created_at same day as booking */}
-                                        <span className={`text-xs font-bold px-2 py-1 rounded-md ${isSameDay(new Date(b.customers.created_at), new Date(b.start_time))
+                                        <span className={`text-xs font-bold px-2 py-1 rounded-md ${b.customers?.created_at && isSameDay(new Date(b.customers.created_at), new Date(b.start_time))
                                                 ? 'bg-terracotta-50 text-terracotta-500'
                                                 : 'bg-sage-50 text-sage-700'
                                             }`}>
-                                            {isSameDay(new Date(b.customers.created_at), new Date(b.start_time)) ? 'NEW' : 'RETURNING'}
+                                            {b.customers?.created_at && isSameDay(new Date(b.customers.created_at), new Date(b.start_time)) ? 'NEW' : 'RETURNING'}
                                         </span>
                                     </div>
                                 ))
