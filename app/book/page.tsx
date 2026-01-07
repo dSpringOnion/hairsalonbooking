@@ -376,7 +376,7 @@ export default function BookingPage() {
                             </div>
                             <h2 className="font-serif text-3xl text-charcoal-900 mb-2">Booking Confirmed!</h2>
                             <p className="text-charcoal-800/60 max-w-xs mx-auto mb-8">
-                                We've sent a confirmation email to {email}. We can't wait to see you on {format(selectedDate, 'MMMM d')}!
+                                We&apos;ve sent a confirmation email to {email}. We can&apos;t wait to see you on {format(selectedDate, 'MMMM d')}!
                             </p>
                             <div className="flex flex-col gap-3 justify-center items-center">
                                 <Link
